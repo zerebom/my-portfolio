@@ -1,115 +1,238 @@
 import Image from 'next/image';
+import lt from 'public/images/home/lt.jpg';
+import rainbow from 'public/images/home/rainbow.jpg';
+import sea from 'public/images/home/sea.jpg';
+import wtd from 'public/images/home/wtd.jpg';
+import marina from 'public/images/home/marina.jpg';
+import tree from 'public/images/home/tree.jpg';
+import zenn from 'public/images/home/zenn.png';
+import zenn_icom from 'public/images/home/zenn_icon.jpeg';
+import wtd_icon from 'public/images/home/wtd_icon.jpg';
+import wtd_mark from 'public/images/home/wtd_mark.png';
+import { StaticImageData } from 'next/image';
+
+function ArrowIcon() {
+  return (
+    <svg
+      width='12'
+      height='12'
+      viewBox='0 0 12 12'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path
+        d='M2.07102 11.3494L0.963068 10.2415L9.2017 1.98864H2.83807L2.85227 0.454545H11.8438V9.46023H10.2955L10.3097 3.09659L2.07102 11.3494Z'
+        fill='currentColor'
+      />
+    </svg>
+  );
+}
+function Bloglink({ url, name }: { url: string; name: string }) {
+  return (
+    <div className='group'>
+      <a
+        href={url}
+        className='border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4 w-full'
+      >
+        <div className='flex flex-col'>
+          <p className='font-medium text-neutral-900 dark:text-neutral-100'>
+            {name}
+          </p>
+        </div>
+        <div className='text-neutral-700 dark:text-neutral-300 transform transition-transform duration-300 group-hover:-rotate-12'>
+          <ArrowIcon />
+        </div>
+      </a>
+    </div>
+  );
+}
+function ChannelLink({
+  img,
+  icon_img,
+  link,
+  name,
+}: {
+  img: StaticImageData;
+  icon_img: StaticImageData;
+  link: string;
+  name: string;
+}) {
+  return (
+    <div className='group flex w-full'>
+      <a
+        href={link}
+        target='_blank'
+        className='border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4 w-full'
+      >
+        <div className='flex items-center space-x-3'>
+          <div className='relative h-16'>
+            <Image
+              alt={name}
+              src={img}
+              height={64}
+              width={64}
+              sizes='33vw'
+              className='border border-neutral-200 dark:border-neutral-700 rounded-full h-16 w-16'
+              priority
+            />
+            <div className='border border-neutral-200 dark:border-neutral-700 rounded-full bg-white inline-flex p-1 relative h-7 w-7 items-center -top-6 -right-10'>
+              <Image
+                alt='icon'
+                src={icon_img}
+                height={11}
+                width={19}
+                sizes='33vw'
+                className='object-cover object-center'
+              />
+            </div>
+          </div>
+          <div className='flex flex-col'>
+            <p className='font-medium text-neutral-900 dark:text-neutral-100'>
+              {name}
+            </p>
+          </div>
+        </div>
+        <div className='text-neutral-700 dark:text-neutral-300 transform transition-transform duration-300 group-hover:-rotate-12'>
+          <ArrowIcon />
+        </div>
+      </a>
+    </div>
+  );
+}
 
 export default function Page() {
-  return <h1>Hello, Next.js!</h1>;
+  return (
+    <section>
+      <h1 className='font-medium text-2xl mb-8 tracking-tighter'>
+        hey, I'm Kokoro 👋
+      </h1>
 
-  //(
-  // <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-  //   <div className='z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex'>
-  //     <p className='fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30'>
-  //       Get started by editing&nbsp;
-  //       <code className='font-mono font-bold'>src/app/page.tsx</code>
-  //     </p>
-  //     <div className='fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none'>
-  //       <a
-  //         className='pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0'
-  //         href='https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app'
-  //         target='_blank'
-  //         rel='noopener noreferrer'
-  //       >
-  //         By{' '}
-  //         <Image
-  //           src='/vercel.svg'
-  //           alt='Vercel Logo'
-  //           className='dark:invert'
-  //           width={100}
-  //           height={24}
-  //           priority
-  //         />
-  //       </a>
-  //     </div>
-  //   </div>
+      <p className='prose prose-neutral dark:prose-invert'>
+        I work as a data scientist, where I'm involved in making data-driven
+        decisions and developments for the growth of our services. At Commmune I
+        am engaged in understanding and fostering communities, aiming to create
+        environments where people can connect, grow, and learn together through
+        big data use.
+      </p>
 
-  //   <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-  //     <Image
-  //       className='relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert'
-  //       src='/next.svg'
-  //       alt='Next.js Logo'
-  //       width={180}
-  //       height={37}
-  //       priority
-  //     />
-  //   </div>
+      <div className='columns-2 sm:columns-3 gap-4 my-8'>
+        <div className='relative h-80 mb-4'>
+          <Image
+            alt='My twitter avatar'
+            src={tree}
+            fill
+            sizes='(max-width: 768px) 213px, 33vw'
+            priority
+            className='rounded-lg object-cover'
+          />
+        </div>
 
-  //   <div className='mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left'>
-  //     <a
-  //       href='https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app'
-  //       className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-  //       target='_blank'
-  //       rel='noopener noreferrer'
-  //     >
-  //       <h2 className={`mb-3 text-2xl font-semibold`}>
-  //         Docs{' '}
-  //         <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-  //           -&gt;
-  //         </span>
-  //       </h2>
-  //       <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-  //         Find in-depth information about Next.js features and API.
-  //       </p>
-  //     </a>
+        <div className='relative h-40 mb-4 sm:mb-4'>
+          <Image
+            alt='Rainbow'
+            src={rainbow}
+            fill
+            priority
+            sizes='(max-width: 768px) 213px, 33vw'
+            className='rounded-lg object-cover object-top'
+          />
+        </div>
 
-  //     <a
-  //       href='https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-  //       className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-  //       target='_blank'
-  //       rel='noopener noreferrer'
-  //     >
-  //       <h2 className={`mb-3 text-2xl font-semibold`}>
-  //         Learn{' '}
-  //         <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-  //           -&gt;
-  //         </span>
-  //       </h2>
-  //       <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-  //         Learn about Next.js in an interactive course with&nbsp;quizzes!
-  //       </p>
-  //     </a>
+        <div className='relative h-40 mb-4'>
+          <Image
+            alt='lt'
+            src={lt}
+            fill
+            priority
+            sizes='(max-width: 768px) 213px, 33vw'
+            className='rounded-lg  object-cover object-right'
+          />
+        </div>
 
-  //     <a
-  //       href='https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app'
-  //       className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-  //       target='_blank'
-  //       rel='noopener noreferrer'
-  //     >
-  //       <h2 className={`mb-3 text-2xl font-semibold`}>
-  //         Templates{' '}
-  //         <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-  //           -&gt;
-  //         </span>
-  //       </h2>
-  //       <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-  //         Explore starter templates for Next.js.
-  //       </p>
-  //     </a>
+        <div className='relative h-40 mb-4 sm:h-80'>
+          <Image
+            alt='wtd'
+            src={wtd}
+            priority
+            fill
+            sizes='(max-width: 768px) 213px, 33vw'
+            className='rounded-lg object-cover object-top sm:object-left'
+          />
+        </div>
 
-  //     <a
-  //       href='https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app'
-  //       className='group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30'
-  //       target='_blank'
-  //       rel='noopener noreferrer'
-  //     >
-  //       <h2 className={`mb-3 text-2xl font-semibold`}>
-  //         Deploy{' '}
-  //         <span className='inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none'>
-  //           -&gt;
-  //         </span>
-  //       </h2>
-  //       <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-  //         Instantly deploy your Next.js site to a shareable URL with Vercel.
-  //       </p>
-  //     </a>
-  //   </div>
-  // </main>
-  //);
+        <div className='relative h-80 mb-4'>
+          <Image
+            alt='Enoshima'
+            src={sea}
+            fill
+            sizes='(max-width: 768px) 213px, 33vw'
+            priority
+            className='rounded-lg object-cover  sm:object-center'
+          />
+        </div>
+
+        <div className='relative h-40 mb-4'>
+          <Image
+            alt='marina'
+            src={marina}
+            priority
+            fill
+            className='rounded-lg object-cover object-center'
+          />
+        </div>
+      </div>
+
+      <div className='my-8 flex flex-col sm:flex-row space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 w-full'>
+        <ChannelLink
+          img={zenn_icom}
+          icon_img={zenn}
+          name='Zenn articles'
+          link='https://zenn.dev/zerebom'
+        />
+
+        <ChannelLink
+          img={wtd_icon}
+          icon_img={wtd_mark}
+          name='Wantedly profile'
+          link='https://www.wantedly.com/id/kokoroo'
+        />
+      </div>
+
+      <div className='prose prose-neutral dark:prose-invert'>
+        <p>
+          I regularly publish articles on SaaS, recommendation systems, MLOps,
+          and data analysis. For more details, please check the link below.
+        </p>
+      </div>
+      <div className='my-8 flex flex-col space-y-4 w-full'>
+        <Bloglink
+          url='https://note.com/higu_engineer/n/n43955bd85459'
+          name='行動モデルに沿った意志力に頼らない良い習慣の作り方'
+        />
+        <Bloglink
+          url='https://zenn.dev/zerebom/articles/a86dc6198625fe'
+          name='高速で持続可能な開発のためのソフトウェア工学と機械学習への適用'
+        />
+
+        <Bloglink
+          url='https://speakerdeck.com/zerebom/wantedlydefeature-storewodao-ru-suruji-nikao-etakoto'
+          name='WantedlyでFeature Storeを導入する際に考えたこと'
+        />
+      </div>
+
+      <div className='prose prose-neutral dark:prose-invert'>
+        <p>
+          Note: This site was designed with inspiration from:
+          <br />
+          <a
+            href='https://vercel.com/templates/next.js/nextjs-portfolio'
+            target='_blank'
+            className='text-blue-600 dark:text-blue-400 hover:underline'
+          >
+            vercel.com/templates/next.js/nextjs-portfolio
+          </a>
+        </p>
+      </div>
+    </section>
+  );
 }
