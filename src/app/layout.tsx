@@ -3,9 +3,10 @@ import { Navbar } from './components/nav';
 import { Roboto_Slab } from 'next/font/google';
 import './globals.css';
 // import { Zen_Kaku_Gothic_New } from 'next/font/google';
-const url = 'https://zerebom.vercel.app/';
+const url = 'https://zerebom.vercel.app';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(url),
   title: {
     default: 'Kokoro Higuchi',
     template: '%s | Kokoro Higuchi',
