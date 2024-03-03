@@ -3,6 +3,7 @@ import { Navbar } from './components/nav';
 import { Roboto_Slab } from 'next/font/google';
 import './globals.css';
 // import { Zen_Kaku_Gothic_New } from 'next/font/google';
+const url = 'https://zerebom.vercel.app/';
 
 export const metadata: Metadata = {
   title: {
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Kokoro Higuchi',
+    url: url,
     description: 'Developer, data scientist and blogger',
     siteName: 'Kokoro Higuchi',
     locale: 'jp_JP',
