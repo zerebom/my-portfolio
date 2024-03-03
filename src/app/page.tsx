@@ -104,15 +104,15 @@ export default function Page() {
   return (
     <section>
       <h1 className='font-medium text-2xl mb-8 tracking-tighter'>
-        hey, I'm Kokoro 👋
+        {`hey, I'm Kokoro 👋`}
       </h1>
 
       <p className='prose prose-neutral dark:prose-invert'>
-        I work as a data scientist, where I'm involved in making data-driven
+        {`I work as a data scientist, where I'm involved in making data-driven
         decisions and developments for the growth of our services. At Commmune I
         am engaged in understanding and fostering communities, aiming to create
         environments where people can connect, grow, and learn together through
-        big data use.
+        big data use.`}
       </p>
 
       <div className='columns-2 sm:columns-3 gap-4 my-8'>
