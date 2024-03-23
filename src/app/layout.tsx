@@ -43,13 +43,17 @@ const cx = (...classes: any[]) => classes.filter(Boolean).join(' ');
 
 export default function RootLayout({
   children,
+  maxWidthClass = 'max-w-3xl',
 }: Readonly<{
   children: React.ReactNode;
+  maxWidthClass?: string;
 }>) {
   return (
     <html lang='ja' className={cx(RobotoSlabFont.className)}>
       <head></head>
-      <body className='antialiased max-w-2xl mb-40 flex flex-col md:flex-row mx-4 mt-8 lg:mx-auto'>
+      <body
+        className={`antialiased ${maxWidthClass} mb-40 flex flex-col md:flex-row mx-4 mt-8 lg:mx-auto`}
+      >
         <main>
           <Navbar />
           {children}
