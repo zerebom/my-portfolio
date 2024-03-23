@@ -1,0 +1,222 @@
+[
+  {
+    "creator": "zerebom",
+    "title": "Pythonの非同期処理の基礎とOpenAI APIへ並列リクエストする実践例",
+    "link": "https://zenn.dev/commmune/articles/19296b87231ea8",
+    "pubDate": "Mon, 19 Feb 2024 09:20:05 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--L7aPZCs5--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:Python%25E3%2581%25AE%25E9%259D%259E%25E5%2590%258C%25E6%259C%259F%25E5%2587%25A6%25E7%2590%2586%25E3%2581%25AE%25E5%259F%25BA%25E7%25A4%258E%25E3%2581%25A8OpenAI%2520API%25E3%2581%25B8%25E4%25B8%25A6%25E5%2588%2597%25E3%2583%25AA%25E3%2582%25AF%25E3%2582%25A8%25E3%2582%25B9%25E3%2583%2588%25E3%2581%2599%25E3%2582%258B%25E5%25AE%259F%25E8%25B7%25B5%25E4%25BE%258B%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_34:zerebom%2Cx_220%2Cy_108/bo_3px_solid_rgb:d6e3ed%2Cg_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyL2E3OWZiNGQ4NjIuanBlZw==%2Cr_20%2Cw_90%2Cx_92%2Cy_102/co_rgb:6e7b85%2Cg_south_west%2Cl_text:notosansjp-medium.otf_30:%25E3%2582%25B3%25E3%2583%259F%25E3%2583%25A5%25E3%2583%25BC%25E3%2583%25B3%25E6%25A0%25AA%25E5%25BC%258F%25E4%25BC%259A%25E7%25A4%25BE%2Cx_220%2Cy_160/bo_4px_solid_white%2Cg_south_west%2Ch_50%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_50%2Cx_139%2Cy_84/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--L7aPZCs5--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:Python%25E3%2581%25AE%25E9%259D%259E%25E5%2590%258C%25E6%259C%259F%25E5%2587%25A6%25E7%2590%2586%25E3%2581%25AE%25E5%259F%25BA%25E7%25A4%258E%25E3%2581%25A8OpenAI%2520API%25E3%2581%25B8%25E4%25B8%25A6%25E5%2588%2597%25E3%2583%25AA%25E3%2582%25AF%25E3%2582%25A8%25E3%2582%25B9%25E3%2583%2588%25E3%2581%2599%25E3%2582%258B%25E5%25AE%259F%25E8%25B7%25B5%25E4%25BE%258B%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_34:zerebom%2Cx_220%2Cy_108/bo_3px_solid_rgb:d6e3ed%2Cg_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyL2E3OWZiNGQ4NjIuanBlZw==%2Cr_20%2Cw_90%2Cx_92%2Cy_102/co_rgb:6e7b85%2Cg_south_west%2Cl_text:notosansjp-medium.otf_30:%25E3%2582%25B3%25E3%2583%259F%25E3%2583%25A5%25E3%2583%25BC%25E3%2583%25B3%25E6%25A0%25AA%25E5%25BC%258F%25E4%25BC%259A%25E7%25A4%25BE%2Cx_220%2Cy_160/bo_4px_solid_white%2Cg_south_west%2Ch_50%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_50%2Cx_139%2Cy_84/v1627283836/default/og-base-w1200-v2.png",
+    "content": "こんにちは、commmuneでデータサイエンティストをしているひぐです。\n人間が苦手なマルチタスクをLLMに任せたら、効果的に処理してくれるのではないか?というモチベーションのもと、Pythonの非同期処理を使って並列かつストリーミングでChatGPTの回答を出力するアプリを作りました🤖\n例えば下記は、ある課題を入力すると、深さ・広さ・構造・時間軸という異なる観点で解像度を上げてくれるアプリケーションです。\n\nアプリに関する登壇資料↓\nhttps://speakerdeck.com/zerebom/async-call-llm\nこのアプリ作成にあたってPythonの非同期処理を勉強したと...",
+    "contentSnippet": "こんにちは、commmuneでデータサイエンティストをしているひぐです。\n人間が苦手なマルチタスクをLLMに任せたら、効果的に処理してくれるのではないか?というモチベーションのもと、Pythonの非同期処理を使って並列かつストリーミングでChatGPTの回答を出力するアプリを作りました🤖\n例えば下記は、ある課題を入力すると、深さ・広さ・構造・時間軸という異なる観点で解像度を上げてくれるアプリケーションです。\n\nアプリに関する登壇資料↓\nhttps://speakerdeck.com/zerebom/async-call-llm\nこのアプリ作成にあたってPythonの非同期処理を勉強したと...",
+    "guid": "https://zenn.dev/commmune/articles/19296b87231ea8",
+    "isoDate": "2024-02-19T09:20:05.000Z"
+  },
+  {
+    "title": "2023年のふりかえり",
+    "link": "https://note.com/higu_engineer/n/n6b34c2bdb1e2",
+    "pubDate": "Sat, 30 Dec 2023 12:07:54 +0900",
+    "thumbnail": "https://assets.st-note.com/production/uploads/images/125966109/rectangle_large_type_2_79c725a17d9093b87be125c98bc28119.png?width=800",
+    "content": "ひぐです。今年をふりかえります。\n技術発信と読書\n続きをみる",
+    "contentSnippet": "ひぐです。今年をふりかえります。\n技術発信と読書\n続きをみる",
+    "guid": "https://note.com/higu_engineer/n/n6b34c2bdb1e2",
+    "isoDate": "2023-12-30T03:07:54.000Z"
+  },
+  {
+    "title": "3年間の業務と1on1を経て学んだ、よりよい仕事の進め方",
+    "link": "https://note.com/higu_engineer/n/n72439eebcff8",
+    "pubDate": "Thu, 28 Dec 2023 18:00:47 +0900",
+    "thumbnail": "https://assets.st-note.com/production/uploads/images/125373804/rectangle_large_type_2_5c6fec09d45af743fd8dd3bc6bf1ce0a.png?width=800",
+    "content": "こんにちは、ひぐです。新卒から3年間弱、データサイエンティストとして働いていました。\n3年間で業務や、多くの方との1on1を通じて様々な仕事の進め方を教わりました。(1on1の議事録はA4 400ページ分くらいありました。。。！）\n続きをみる",
+    "contentSnippet": "こんにちは、ひぐです。新卒から3年間弱、データサイエンティストとして働いていました。\n3年間で業務や、多くの方との1on1を通じて様々な仕事の進め方を教わりました。(1on1の議事録はA4 400ページ分くらいありました。。。！）\n続きをみる",
+    "guid": "https://note.com/higu_engineer/n/n72439eebcff8",
+    "isoDate": "2023-12-28T09:00:47.000Z"
+  },
+  {
+    "title": "Product Led Growthを読んで: プロダクト主導の成長モデルの概要とエンジニアとしての感想",
+    "link": "https://note.com/higu_engineer/n/ned2b7d00e053",
+    "pubDate": "Sun, 03 Dec 2023 16:35:37 +0900",
+    "thumbnail": "https://assets.st-note.com/production/uploads/images/123424502/rectangle_large_type_2_dd96f7ce923dc9d3574e169319f9a4ae.png?width=800",
+    "content": "最近、SaaSを開発しているエンジニアとして、事業の成長のさせ方など、技術以外の分野にも明るくなりたいと思って、Product Led Growth(PLG)という本を読みました。\nSaaSの潮流の変化や、その変化に適合したビジネスモデル(PLG)の概要や具体的な手法などがわかりやすく説明されており非常に面白かったです。\n続きをみる",
+    "contentSnippet": "最近、SaaSを開発しているエンジニアとして、事業の成長のさせ方など、技術以外の分野にも明るくなりたいと思って、Product Led Growth(PLG)という本を読みました。\nSaaSの潮流の変化や、その変化に適合したビジネスモデル(PLG)の概要や具体的な手法などがわかりやすく説明されており非常に面白かったです。\n続きをみる",
+    "guid": "https://note.com/higu_engineer/n/ned2b7d00e053",
+    "isoDate": "2023-12-03T07:35:37.000Z"
+  },
+  {
+    "title": "行動モデルに沿った意志力に頼らない良い習慣の作り方",
+    "link": "https://note.com/higu_engineer/n/n43955bd85459",
+    "pubDate": "Thu, 10 Aug 2023 18:25:34 +0900",
+    "thumbnail": "https://assets.st-note.com/production/uploads/images/112677751/rectangle_large_type_2_48c51bb2498f563cd5eb6f5a2ac20a5a.png?width=800",
+    "content": "こんにちは、Wantedlyでデータサイエンティストをしているひぐ(@zerebom_3)と申します。\n1年ほど前に、社内の先輩(@potsbo)との1on1で、\"仕事ができるようになりたくて高い目標(ex. 業務外で毎週X時間勉強する)を建てるが、結局続かず、能力も伸びない。自己肯定感も下がってしまう。どうしたら良いか。😭\"と相談しました。\n続きをみる",
+    "contentSnippet": "こんにちは、Wantedlyでデータサイエンティストをしているひぐ(@zerebom_3)と申します。\n1年ほど前に、社内の先輩(@potsbo)との1on1で、\"仕事ができるようになりたくて高い目標(ex. 業務外で毎週X時間勉強する)を建てるが、結局続かず、能力も伸びない。自己肯定感も下がってしまう。どうしたら良いか。😭\"と相談しました。\n続きをみる",
+    "guid": "https://note.com/higu_engineer/n/n43955bd85459",
+    "isoDate": "2023-08-10T09:25:34.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "Poetry1.5.1からGPU版のPytorchのインストールが簡単になりました",
+    "link": "https://zenn.dev/zerebom/articles/b338784c8ac76a",
+    "pubDate": "Mon, 03 Jul 2023 11:11:09 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--tVCD8aQF--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:Poetry1.5.1%25E3%2581%258B%25E3%2582%2589GPU%25E7%2589%2588%25E3%2581%25AEPytorch%25E3%2581%25AE%25E3%2582%25A4%25E3%2583%25B3%25E3%2582%25B9%25E3%2583%2588%25E3%2583%25BC%25E3%2583%25AB%25E3%2581%258C%25E7%25B0%25A1%25E5%258D%2598%25E3%2581%25AB%25E3%2581%25AA%25E3%2582%258A%25E3%2581%25BE%25E3%2581%2597%25E3%2581%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--tVCD8aQF--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:Poetry1.5.1%25E3%2581%258B%25E3%2582%2589GPU%25E7%2589%2588%25E3%2581%25AEPytorch%25E3%2581%25AE%25E3%2582%25A4%25E3%2583%25B3%25E3%2582%25B9%25E3%2583%2588%25E3%2583%25BC%25E3%2583%25AB%25E3%2581%258C%25E7%25B0%25A1%25E5%258D%2598%25E3%2581%25AB%25E3%2581%25AA%25E3%2582%258A%25E3%2581%25BE%25E3%2581%2597%25E3%2581%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "\n 結論\nGPU版PytorchのようなPyPIに存在しないパッケージにおいて、Poetry1.5.1からインストールがより簡単になりました🎉\n例えば自分の環境では下記の2行でインストールできます。\npoetry source add torch_cu118 --priority=explicit https://download.pytorch.org/whl/cu118\npoetry add torch torchvision torchaudio --source torch_cu118\n具体的には下記の手順できます。\n\n公式サイトから、インストールコマンドをコピーする。\n\nhtt...",
+    "contentSnippet": "結論\nGPU版PytorchのようなPyPIに存在しないパッケージにおいて、Poetry1.5.1からインストールがより簡単になりました🎉\n例えば自分の環境では下記の2行でインストールできます。\npoetry source add torch_cu118 --priority=explicit https://download.pytorch.org/whl/cu118\npoetry add torch torchvision torchaudio --source torch_cu118\n具体的には下記の手順できます。\n\n公式サイトから、インストールコマンドをコピーする。\n\nhtt...",
+    "guid": "https://zenn.dev/zerebom/articles/b338784c8ac76a",
+    "isoDate": "2023-07-03T11:11:09.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "Pythonのパッケージングと配布の全体像",
+    "link": "https://zenn.dev/zerebom/articles/60d5ad4b18c901",
+    "pubDate": "Thu, 15 Jun 2023 09:52:51 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--aDg5RIo1--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:Python%25E3%2581%25AE%25E3%2583%2591%25E3%2583%2583%25E3%2582%25B1%25E3%2583%25BC%25E3%2582%25B8%25E3%2583%25B3%25E3%2582%25B0%25E3%2581%25A8%25E9%2585%258D%25E5%25B8%2583%25E3%2581%25AE%25E5%2585%25A8%25E4%25BD%2593%25E5%2583%258F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--aDg5RIo1--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:Python%25E3%2581%25AE%25E3%2583%2591%25E3%2583%2583%25E3%2582%25B1%25E3%2583%25BC%25E3%2582%25B8%25E3%2583%25B3%25E3%2582%25B0%25E3%2581%25A8%25E9%2585%258D%25E5%25B8%2583%25E3%2581%25AE%25E5%2585%25A8%25E4%25BD%2593%25E5%2583%258F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "EDIT: このブログと似た内容の話をPyCon APAC2023にてお話ししました。\nこちらの登壇資料も合わせてご覧いただけると幸いです\nhttps://speakerdeck.com/zerebom/pythondenopatukezingu-ekosisutemunoli-jie-toxian-chang-denohuo-yong-pycon-apac2023\n\nこんにちはWantedlyの樋口です。\nPythonのパッケージングと配布は歴史が長く、多くのツール(ex. conda, pip, pipenv, poetry, rye...)が開発されてきました。これらの多様性はPy...",
+    "contentSnippet": "EDIT: このブログと似た内容の話をPyCon APAC2023にてお話ししました。\nこちらの登壇資料も合わせてご覧いただけると幸いです\nhttps://speakerdeck.com/zerebom/pythondenopatukezingu-ekosisutemunoli-jie-toxian-chang-denohuo-yong-pycon-apac2023\n\nこんにちはWantedlyの樋口です。\nPythonのパッケージングと配布は歴史が長く、多くのツール(ex. conda, pip, pipenv, poetry, rye...)が開発されてきました。これらの多様性はPy...",
+    "guid": "https://zenn.dev/zerebom/articles/60d5ad4b18c901",
+    "isoDate": "2023-06-15T09:52:51.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "高速で持続可能な開発のためのソフトウェア工学と機械学習への適用",
+    "link": "https://zenn.dev/zerebom/articles/a86dc6198625fe",
+    "pubDate": "Thu, 25 May 2023 10:02:53 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--8FbztIGr--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E9%25AB%2598%25E9%2580%259F%25E3%2581%25A7%25E6%258C%2581%25E7%25B6%259A%25E5%258F%25AF%25E8%2583%25BD%25E3%2581%25AA%25E9%2596%258B%25E7%2599%25BA%25E3%2581%25AE%25E3%2581%259F%25E3%2582%2581%25E3%2581%25AE%25E3%2582%25BD%25E3%2583%2595%25E3%2583%2588%25E3%2582%25A6%25E3%2582%25A7%25E3%2582%25A2%25E5%25B7%25A5%25E5%25AD%25A6%25E3%2581%25A8%25E6%25A9%259F%25E6%25A2%25B0%25E5%25AD%25A6%25E7%25BF%2592%25E3%2581%25B8%25E3%2581%25AE%25E9%2581%25A9%25E7%2594%25A8%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--8FbztIGr--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E9%25AB%2598%25E9%2580%259F%25E3%2581%25A7%25E6%258C%2581%25E7%25B6%259A%25E5%258F%25AF%25E8%2583%25BD%25E3%2581%25AA%25E9%2596%258B%25E7%2599%25BA%25E3%2581%25AE%25E3%2581%259F%25E3%2582%2581%25E3%2581%25AE%25E3%2582%25BD%25E3%2583%2595%25E3%2583%2588%25E3%2582%25A6%25E3%2582%25A7%25E3%2582%25A2%25E5%25B7%25A5%25E5%25AD%25A6%25E3%2581%25A8%25E6%25A9%259F%25E6%25A2%25B0%25E5%25AD%25A6%25E7%25BF%2592%25E3%2581%25B8%25E3%2581%25AE%25E9%2581%25A9%25E7%2594%25A8%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "こんにちは、Wantedlyで推薦システムを開発している樋口です。Kaggleや実務での機械学習の開発にて、過去に下記のような失敗がありました。\n\n精度改善のために実験を繰り返し追加したら、PRが巨大になり、レビューに時間がかかった\n学習結果を確認したら、パラメータを一部だけ間違えていて、再度長い実験をやり直した\n\nこのような悩みを解決するために、書籍や経験で学んだプラクティスを取り組んできました。例をあげると以下のようなのものがあります。\n\n\n小さい単位でPRを作成する\nパラメータを設定ファイルに切り出して、ヌケモレを減らす\n学習データをサンプリングして、実行時間を短縮して結果を素早く...",
+    "contentSnippet": "こんにちは、Wantedlyで推薦システムを開発している樋口です。Kaggleや実務での機械学習の開発にて、過去に下記のような失敗がありました。\n\n精度改善のために実験を繰り返し追加したら、PRが巨大になり、レビューに時間がかかった\n学習結果を確認したら、パラメータを一部だけ間違えていて、再度長い実験をやり直した\n\nこのような悩みを解決するために、書籍や経験で学んだプラクティスを取り組んできました。例をあげると以下のようなのものがあります。\n\n\n小さい単位でPRを作成する\nパラメータを設定ファイルに切り出して、ヌケモレを減らす\n学習データをサンプリングして、実行時間を短縮して結果を素早く...",
+    "guid": "https://zenn.dev/zerebom/articles/a86dc6198625fe",
+    "isoDate": "2023-05-25T10:02:53.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "コマンド一つでGitHub上のコメントを自動要約するGitHub Actionsを公開しました",
+    "link": "https://zenn.dev/zerebom/articles/5521a0b93648fd",
+    "pubDate": "Wed, 12 Apr 2023 09:07:19 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--YktjST-3--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E3%2582%25B3%25E3%2583%259E%25E3%2583%25B3%25E3%2583%2589%25E4%25B8%2580%25E3%2581%25A4%25E3%2581%25A7GitHub%25E4%25B8%258A%25E3%2581%25AE%25E3%2582%25B3%25E3%2583%25A1%25E3%2583%25B3%25E3%2583%2588%25E3%2582%2592%25E8%2587%25AA%25E5%258B%2595%25E8%25A6%2581%25E7%25B4%2584%25E3%2581%2599%25E3%2582%258BGitHub%2520Actions%25E3%2582%2592%25E5%2585%25AC%25E9%2596%258B%25E3%2581%2597%25E3%2581%25BE%25E3%2581%2597%25E3%2581%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--YktjST-3--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E3%2582%25B3%25E3%2583%259E%25E3%2583%25B3%25E3%2583%2589%25E4%25B8%2580%25E3%2581%25A4%25E3%2581%25A7GitHub%25E4%25B8%258A%25E3%2581%25AE%25E3%2582%25B3%25E3%2583%25A1%25E3%2583%25B3%25E3%2583%2588%25E3%2582%2592%25E8%2587%25AA%25E5%258B%2595%25E8%25A6%2581%25E7%25B4%2584%25E3%2581%2599%25E3%2582%258BGitHub%2520Actions%25E3%2582%2592%25E5%2585%25AC%25E9%2596%258B%25E3%2581%2597%25E3%2581%25BE%25E3%2581%2597%25E3%2581%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "こんにちは！本記事では、GitHubのissueコメントを簡単に要約できる「SummarAIzeHub」というGitHub Actionsについて紹介します。このGitHub Actionsは、プロジェクトのコミュニケーションを円滑に進めるためのサポートツールとして作成しました。💪\nhttps://github.com/zerebom/SummarAIzeHub\n記事では、SummarAIzeHubの開発の動機や背景、使用法、技術的詳細などを紹介します。\n\n 使用方法\nSummarAIzeHubは下記のように使用できます。GitHub上のissueやプルリクエストで、コメント欄に/sum...",
+    "contentSnippet": "こんにちは！本記事では、GitHubのissueコメントを簡単に要約できる「SummarAIzeHub」というGitHub Actionsについて紹介します。このGitHub Actionsは、プロジェクトのコミュニケーションを円滑に進めるためのサポートツールとして作成しました。💪\nhttps://github.com/zerebom/SummarAIzeHub\n記事では、SummarAIzeHubの開発の動機や背景、使用法、技術的詳細などを紹介します。\n\n 使用方法\nSummarAIzeHubは下記のように使用できます。GitHub上のissueやプルリクエストで、コメント欄に/sum...",
+    "guid": "https://zenn.dev/zerebom/articles/5521a0b93648fd",
+    "isoDate": "2023-04-12T09:07:19.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "ChatGPT-4とのペアプログラミング体験: PDF要約＆Q&Aサービス開発の所感",
+    "link": "https://zenn.dev/zerebom/articles/1ffd51da420c9e",
+    "pubDate": "Sat, 25 Mar 2023 10:41:23 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--YaiM-Osy--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:ChatGPT-4%25E3%2581%25A8%25E3%2581%25AE%25E3%2583%259A%25E3%2582%25A2%25E3%2583%2597%25E3%2583%25AD%25E3%2582%25B0%25E3%2583%25A9%25E3%2583%259F%25E3%2583%25B3%25E3%2582%25B0%25E4%25BD%2593%25E9%25A8%2593%253A%2520PDF%25E8%25A6%2581%25E7%25B4%2584%25EF%25BC%2586Q%2526A%25E3%2582%25B5%25E3%2583%25BC%25E3%2583%2593%25E3%2582%25B9%25E9%2596%258B%25E7%2599%25BA%25E3%2581%25AE%25E6%2589%2580%25E6%2584%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--YaiM-Osy--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:ChatGPT-4%25E3%2581%25A8%25E3%2581%25AE%25E3%2583%259A%25E3%2582%25A2%25E3%2583%2597%25E3%2583%25AD%25E3%2582%25B0%25E3%2583%25A9%25E3%2583%259F%25E3%2583%25B3%25E3%2582%25B0%25E4%25BD%2593%25E9%25A8%2593%253A%2520PDF%25E8%25A6%2581%25E7%25B4%2584%25EF%25BC%2586Q%2526A%25E3%2582%25B5%25E3%2583%25BC%25E3%2583%2593%25E3%2582%25B9%25E9%2596%258B%25E7%2599%25BA%25E3%2581%25AE%25E6%2589%2580%25E6%2584%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "こんにちは！本記事ではChatGPT4を使ってPDF文書を要約し、質問応答サービスを提供するWebアプリケーションを開発した記録を紹介します。このサービスは、論文を読む際に役立つサポートツールとして作成しました。\n記事では、サービス開発においてChatGPT-4がどのように活用できるか、また、どのようにペアプロを行うと効果的かといった内容をシェアします。\nこの記事を通じて、AI技術とエンジニアがどのように協力し、新たな価値を生み出すことができそうか、という所感を伝えられたら嬉しいです。\n\n gpt-pdf-summarizerの概要\n今回開発したgpt-pdf-summarizerは、P...",
+    "contentSnippet": "こんにちは！本記事ではChatGPT4を使ってPDF文書を要約し、質問応答サービスを提供するWebアプリケーションを開発した記録を紹介します。このサービスは、論文を読む際に役立つサポートツールとして作成しました。\n記事では、サービス開発においてChatGPT-4がどのように活用できるか、また、どのようにペアプロを行うと効果的かといった内容をシェアします。\nこの記事を通じて、AI技術とエンジニアがどのように協力し、新たな価値を生み出すことができそうか、という所感を伝えられたら嬉しいです。\n\n gpt-pdf-summarizerの概要\n今回開発したgpt-pdf-summarizerは、P...",
+    "guid": "https://zenn.dev/zerebom/articles/1ffd51da420c9e",
+    "isoDate": "2023-03-25T10:41:23.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "設定ファイルを使ったPytestのimportError対策",
+    "link": "https://zenn.dev/zerebom/articles/3ee57dc587b6d3",
+    "pubDate": "Sun, 12 Feb 2023 12:32:38 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--K0NOoNzF--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E8%25A8%25AD%25E5%25AE%259A%25E3%2583%2595%25E3%2582%25A1%25E3%2582%25A4%25E3%2583%25AB%25E3%2582%2592%25E4%25BD%25BF%25E3%2581%25A3%25E3%2581%259FPytest%25E3%2581%25AEimportError%25E5%25AF%25BE%25E7%25AD%2596%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--K0NOoNzF--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E8%25A8%25AD%25E5%25AE%259A%25E3%2583%2595%25E3%2582%25A1%25E3%2582%25A4%25E3%2583%25AB%25E3%2582%2592%25E4%25BD%25BF%25E3%2581%25A3%25E3%2581%259FPytest%25E3%2581%25AEimportError%25E5%25AF%25BE%25E7%25AD%2596%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "こんにちは、ひぐです。\nPytestを実行した際に、パッケージのimportがうまくいかず、ハマってしまいました。\nまた解決策を調べると、複数の方法が出てきて混乱してしまったので、この記事では自分が一番しっくりきた設定ファイルを使ったimport方法をまとめておこうと思います。\nまだ、Pytest使い始めたばかりなので考慮漏れ等あるかもしれないです。なにかあれば更新していこうと思います🙏\n\n 前提\nm1 macbookでpoetryを使った状態で実験しています。\npyproject.toml[tool.poetry]\nname = \"my_package\"\nversion = \"0.1....",
+    "contentSnippet": "こんにちは、ひぐです。\nPytestを実行した際に、パッケージのimportがうまくいかず、ハマってしまいました。\nまた解決策を調べると、複数の方法が出てきて混乱してしまったので、この記事では自分が一番しっくりきた設定ファイルを使ったimport方法をまとめておこうと思います。\nまだ、Pytest使い始めたばかりなので考慮漏れ等あるかもしれないです。なにかあれば更新していこうと思います🙏\n\n 前提\nm1 macbookでpoetryを使った状態で実験しています。\npyproject.toml[tool.poetry]\nname = \"my_package\"\nversion = \"0.1....",
+    "guid": "https://zenn.dev/zerebom/articles/3ee57dc587b6d3",
+    "isoDate": "2023-02-12T12:32:38.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "【Kaggle】OTTOコンペ参加記(22th/2587th)🥈",
+    "link": "https://zenn.dev/zerebom/articles/91910acb0d9b93",
+    "pubDate": "Wed, 01 Feb 2023 00:39:12 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--t1NWHY-E--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E3%2580%2590Kaggle%25E3%2580%2591OTTO%25E3%2582%25B3%25E3%2583%25B3%25E3%2583%259A%25E5%258F%2582%25E5%258A%25A0%25E8%25A8%2598%252822th%252F2587th%2529%2520%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--t1NWHY-E--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E3%2580%2590Kaggle%25E3%2580%2591OTTO%25E3%2582%25B3%25E3%2583%25B3%25E3%2583%259A%25E5%258F%2582%25E5%258A%25A0%25E8%25A8%2598%252822th%252F2587th%2529%2520%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "Kaggleで開催されていたottoコンペの概要説明と、チームのSolutionについて紹介します。\nKaggleにもSolutionを公開しているので、よければそちらも合わせてお読みください:pray:\nhttps://www.kaggle.com/competitions/otto-recommender-system/discussion/382771\n\n コンペの概要\n本コンペのタスクは、ドイツのECサイト\"otto\"において、各ユーザが将来、どの商品へインタラクション(クリック, カート, オーダー)するか当てるというものです。\n利用できるデータは非常にシンプルで、下記のように...",
+    "contentSnippet": "Kaggleで開催されていたottoコンペの概要説明と、チームのSolutionについて紹介します。\nKaggleにもSolutionを公開しているので、よければそちらも合わせてお読みください:pray:\nhttps://www.kaggle.com/competitions/otto-recommender-system/discussion/382771\n\n コンペの概要\n本コンペのタスクは、ドイツのECサイト\"otto\"において、各ユーザが将来、どの商品へインタラクション(クリック, カート, オーダー)するか当てるというものです。\n利用できるデータは非常にシンプルで、下記のように...",
+    "guid": "https://zenn.dev/zerebom/articles/91910acb0d9b93",
+    "isoDate": "2023-02-01T00:39:12.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "読みやすく、再利用しやすいSQL分析クエリを書くコツ",
+    "link": "https://zenn.dev/zerebom/articles/3b06ff35b5a75f",
+    "pubDate": "Sun, 24 Jul 2022 12:32:38 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--L4Kb8MiH--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E8%25AA%25AD%25E3%2581%25BF%25E3%2582%2584%25E3%2581%2599%25E3%2581%258F%25E3%2580%2581%25E5%2586%258D%25E5%2588%25A9%25E7%2594%25A8%25E3%2581%2597%25E3%2582%2584%25E3%2581%2599%25E3%2581%2584SQL%25E5%2588%2586%25E6%259E%2590%25E3%2582%25AF%25E3%2582%25A8%25E3%2583%25AA%25E3%2582%2592%25E6%259B%25B8%25E3%2581%258F%25E3%2582%25B3%25E3%2583%2584%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--L4Kb8MiH--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E8%25AA%25AD%25E3%2581%25BF%25E3%2582%2584%25E3%2581%2599%25E3%2581%258F%25E3%2580%2581%25E5%2586%258D%25E5%2588%25A9%25E7%2594%25A8%25E3%2581%2597%25E3%2582%2584%25E3%2581%2599%25E3%2581%2584SQL%25E5%2588%2586%25E6%259E%2590%25E3%2582%25AF%25E3%2582%25A8%25E3%2583%25AA%25E3%2582%2592%25E6%259B%25B8%25E3%2581%258F%25E3%2582%25B3%25E3%2583%2584%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "こんにちは、Wantedlyでデータサイエンティストをしている樋口です!\n自分は過去、分析のためにSQLを書いているとき、以下のようなミスをしていました。\n\nメール開封率を集計したら何故か100%を超えてしまった。でもどこが原因かがわからない\n\nメール開封率を集計したのち、クリック率も追加で依頼を受けたが、再利用できるクエリになっておらず、一から書き直した\n\nクエリのレビューを依頼したら、複雑すぎると言われてしまった\n\nこういった経験がある方は自分以外にもいるのではないでしょうか...! SQLは非常に自由度が高く便利である反面、書き方が個人に委ねられ、複雑・難解になりやすいと感じていま...",
+    "contentSnippet": "こんにちは、Wantedlyでデータサイエンティストをしている樋口です!\n自分は過去、分析のためにSQLを書いているとき、以下のようなミスをしていました。\n\nメール開封率を集計したら何故か100%を超えてしまった。でもどこが原因かがわからない\n\nメール開封率を集計したのち、クリック率も追加で依頼を受けたが、再利用できるクエリになっておらず、一から書き直した\n\nクエリのレビューを依頼したら、複雑すぎると言われてしまった\n\nこういった経験がある方は自分以外にもいるのではないでしょうか...! SQLは非常に自由度が高く便利である反面、書き方が個人に委ねられ、複雑・難解になりやすいと感じていま...",
+    "guid": "https://zenn.dev/zerebom/articles/3b06ff35b5a75f",
+    "isoDate": "2022-07-24T12:32:38.000Z"
+  },
+  {
+    "creator": "zerebom",
+    "title": "【Kaggle】H&Mコンペ参加記(133rd/2952🥈)",
+    "link": "https://zenn.dev/zerebom/articles/9e6bad764d3f97",
+    "pubDate": "Sat, 14 May 2022 12:51:49 GMT",
+    "enclosure": {
+      "url": "https://res.cloudinary.com/zenn/image/upload/s--S17XvjvN--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E3%2580%2590Kaggle%25E3%2580%2591H%2526M%25E3%2582%25B3%25E3%2583%25B3%25E3%2583%259A%25E5%258F%2582%25E5%258A%25A0%25E8%25A8%2598%2528133rd%252F2952%2520%2529%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+      "length": "0",
+      "type": "image/png"
+    },
+    "dc:creator": "zerebom",
+    "thumbnail": "https://res.cloudinary.com/zenn/image/upload/s--S17XvjvN--/c_fit%2Cg_north_west%2Cl_text:notosansjp-medium.otf_55:%25E3%2580%2590Kaggle%25E3%2580%2591H%2526M%25E3%2582%25B3%25E3%2583%25B3%25E3%2583%259A%25E5%258F%2582%25E5%258A%25A0%25E8%25A8%2598%2528133rd%252F2952%2520%2529%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Cl_text:notosansjp-medium.otf_37:zerebom%2Cx_203%2Cy_121/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzUwN2FmMmVhNDMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_95/v1627283836/default/og-base-w1200-v2.png",
+    "content": "こんにちは、ひぐです。Kaggle のH&amp;M Personalized Fashion Recommendations(H&amp;Mコンペ)に参加して銀圏(133rd/2952🥈)でした。\n\n\nせっかく参加したので、やってきたことをまとめたいと思います。\nコードはこちら↓\nhttps://github.com/zerebom/H-and-M-Personalized-Fashion-Recommendations\n\n コンペの概要\n\n タスク\n本コンペのタスクは、article(商品)・customer・transactions(20/09/19までの購買履歴)のテーブルデータ...",
+    "contentSnippet": "こんにちは、ひぐです。Kaggle のH&M Personalized Fashion Recommendations(H&Mコンペ)に参加して銀圏(133rd/2952🥈)でした。\n\n\nせっかく参加したので、やってきたことをまとめたいと思います。\nコードはこちら↓\nhttps://github.com/zerebom/H-and-M-Personalized-Fashion-Recommendations\n\n コンペの概要\n\n タスク\n本コンペのタスクは、article(商品)・customer・transactions(20/09/19までの購買履歴)のテーブルデータ...",
+    "guid": "https://zenn.dev/zerebom/articles/9e6bad764d3f97",
+    "isoDate": "2022-05-14T12:51:49.000Z"
+  },
+  {
+    "title": "新卒1年目を振り返る",
+    "link": "https://note.com/higu_engineer/n/n2ab6b5b002be",
+    "pubDate": "Tue, 12 Apr 2022 21:44:37 +0900",
+    "thumbnail": "https://assets.st-note.com/production/uploads/images/76150278/rectangle_large_type_2_84a55b97cd970a0c6d2ffd5570598071.jpeg?width=800",
+    "content": "こんにちは。Wantedly 新卒2年目の樋口です。データサイエンティストとしてはたらいてます。\n Kokoro Higuchiのプロフィール - WantedlyWantedly, Inc., データサイエンティスト Wantedlyでデータサイエンティストをしています。2021年4www.wantedly.com \n続きをみる",
+    "contentSnippet": "こんにちは。Wantedly 新卒2年目の樋口です。データサイエンティストとしてはたらいてます。\n Kokoro Higuchiのプロフィール - WantedlyWantedly, Inc., データサイエンティスト Wantedlyでデータサイエンティストをしています。2021年4www.wantedly.com \n続きをみる",
+    "guid": "https://note.com/higu_engineer/n/n2ab6b5b002be",
+    "isoDate": "2022-04-12T12:44:37.000Z"
+  }
+]
