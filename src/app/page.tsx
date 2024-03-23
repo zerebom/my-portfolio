@@ -102,7 +102,7 @@ function ChannelLink({
 
 export default function Page() {
   return (
-    <section>
+    <section className='max-w-3xl'>
       <h1 className='font-medium text-2xl mb-8 tracking-tighter'>
         {`hey, I'm Kokoro 👋`}
       </h1>
