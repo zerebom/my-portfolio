@@ -1,13 +1,17 @@
-import react from 'react';
 import data from 'src/rss/data.json';
-import cn from 'classnames';
 import DateFormatter from 'src/_components/date-formatter';
 
-import RootLayout from 'src/app/layout';
-import { Suspense } from 'react';
 import { CoverImage } from 'src/_components/cover-image';
 import { HeroPost } from 'src/_components/hero-post';
 import { Intro } from 'src/_components/intro';
+
+type Props = {
+  title: string;
+  date: string;
+  excerpt: string;
+  link: string;
+  image_src: string;
+};
 
 function PostPreview({ title, date, excerpt, link, image_src }: Props) {
   return (
