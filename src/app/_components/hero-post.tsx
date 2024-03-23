@@ -1,5 +1,5 @@
-import DateFormatter from 'src/_components/date-formatter';
-import { CoverImage } from 'src/_components/cover-image';
+import DateFormatter from '@/app/_components/date-formatter';
+import { CoverImage } from '@/app/_components/cover-image';
 
 type Props = {
   title: string;

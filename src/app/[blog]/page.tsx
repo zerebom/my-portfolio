@@ -1,9 +1,9 @@
 import data from 'src/rss/data.json';
-import DateFormatter from 'src/_components/date-formatter';
+import DateFormatter from '@/app/_components/date-formatter';
 
-import { CoverImage } from 'src/_components/cover-image';
-import { HeroPost } from 'src/_components/hero-post';
-import { Intro } from 'src/_components/intro';
+import { CoverImage } from '@/app/_components/cover-image';
+import { HeroPost } from '@/app/_components/hero-post';
+import { Intro } from '@/app/_components/intro';
 
 type Props = {
   title: string;
@@ -34,7 +34,7 @@ function PostPreview({ title, date, excerpt, link, image_src }: Props) {
   );
 }
 
-export default function page() {
+export default function Page() {
   const heroPost = data[0];
   const morePosts = data.slice(1);
 
@@ -49,7 +49,7 @@ export default function page() {
           link={heroPost.link}
           image_src={heroPost.thumbnail}
         />
-        <h2 className='mb-8 text-4xl md:text-6xl font-bold leading-tight'>
+        <h2 className='mb-8 text-6xl md:text-6xl font-bold leading-tight'>
           More Stories
         </h2>
         <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-16 lg:gap-x-24 gap-y-20 md:gap-y-16 mb-32'>
