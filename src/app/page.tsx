@@ -109,7 +109,7 @@ export default function Page() {
 
       <p className='prose prose-neutral dark:prose-invert'>
         {`I work as a data scientist, where I'm involved in making data-driven
-        decisions and developments for the growth of our services. At Commmune I
+        decisions and developments for the growth of our services. At Commune Inc. I
         am engaged in understanding and fostering communities, aiming to create
         environments where people can connect, grow, and learn together through
         big data use.`}
