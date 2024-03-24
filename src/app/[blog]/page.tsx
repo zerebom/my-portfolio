@@ -20,14 +20,14 @@ function PostPreview({ title, date, excerpt, link, image_src }: Props) {
         <CoverImage title={title} src={image_src} link={link} />
       </div>
       <a className='hover:underline' href={link}>
-        <h3 className='text-3xl mb-3 leading-snug'>{title}</h3>
+        <h3 className='text-xl mb-3 leading-snug'>{title}</h3>
       </a>
       <div className='text-lg mb-4'>
         <p>
           <DateFormatter dateString={date} />
         </p>
       </div>
-      <div className='text-lg leading-relaxed mb-4'>
+      <div className='text-base leading-relaxed mb-4'>
         <p>{excerpt.substring(0, 100)}...</p>
       </div>
     </div>
@@ -49,7 +49,7 @@ export default function Page() {
           link={heroPost.link}
           image_src={heroPost.thumbnail}
         />
-        <h2 className='mb-8 text-6xl md:text-6xl font-bold leading-tight'>
+        <h2 className='mb-8 text-5xl md:text-5xl font-bold leading-tight'>
           More Stories
         </h2>
         <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-16 lg:gap-x-24 gap-y-20 md:gap-y-16 mb-32'>

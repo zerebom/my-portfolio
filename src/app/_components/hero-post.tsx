@@ -18,7 +18,7 @@ export function HeroPost({ title, date, excerpt, link, image_src }: Props) {
 
       <div className='grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8 mb-20 md:mb-28'>
         <div>
-          <h3 className='mb-4 text-4xl'>
+          <h3 className='mb-4 text-3xl lg:text-4xl leading-tight'>
             <a className='hover:underline' href={link}>
               {title}
             </a>
@@ -28,8 +28,9 @@ export function HeroPost({ title, date, excerpt, link, image_src }: Props) {
             <DateFormatter dateString={date} />
           </div>
         </div>
+
         <div>
-          <p className='text-lg leading-relaxed mb-4'>
+          <p className='text-base leading-relaxed mb-4'>
             {excerpt.substring(0, 100)}...
           </p>
         </div>
